@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jiya Gem House</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Marcellus&display=swap">
+<style>
+/* Layout concept: soft storefront. Announcement bar, sticky header with dropdown nav, split hero, circular category row, tabbed product grid, drop carousel, tile banners, reviews, footer. Rose and white, gems drawn as faceted SVG. */
+:root{
+  --bg:#fff7f8;
+  --surface:#ffffff;
+  --blush:#fde8ec;
+  --blush-2:#f8d2db;
+  --rose:#d4607b;
+  --ink:#3b1e28;
+  --muted:#85606c;
+  --line:#f2d3db;
+  --btn-bg:#b8405e;
+  --btn-fg:#ffffff;
+  --ann-bg:#9c2f4c;
+  --ann-fg:#fff3f5;
+  --link:#a93554;
+  --badge-bg:#b8405e;
+  --badge-fg:#ffffff;
+  --font-display:'Marcellus','Times New Roman',serif;
+  --font-body:'Jost','Helvetica Neue',Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1f1218;--surface:#2a1821;--blush:#35202a;--blush-2:#47293a;--rose:#f08aa3;--ink:#fbe9ee;--muted:#c7a4b0;--line:#4b2e3a;
+    --btn-bg:#f08aa3;--btn-fg:#2a1018;--ann-bg:#4a1d2e;--ann-fg:#ffe9ef;--link:#f6a8bb;--badge-bg:#f08aa3;--badge-fg:#2a1018;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1f1218;--surface:#2a1821;--blush:#35202a;--blush-2:#47293a;--rose:#f08aa3;--ink:#fbe9ee;--muted:#c7a4b0;--line:#4b2e3a;
+  --btn-bg:#f08aa3;--btn-fg:#2a1018;--ann-bg:#4a1d2e;--ann-fg:#ffe9ef;--link:#f6a8bb;--badge-bg:#f08aa3;--badge-fg:#2a1018;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+h1,h2,h3{font-family:var(--font-display);font-weight:400;line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+.wrap{max-width:1260px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* announcement */
+.ann{background:var(--ann-bg);color:var(--ann-fg);font-size:13px;letter-spacing:.04em}
+.ann .wrap{display:flex;justify-content:center;align-items:center;min-height:36px;text-align:center}
+.ann span{display:block;padding-block:8px}
+
+/* header */
+.site-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:70;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:14px;min-height:68px;flex-wrap:wrap;padding-block:10px}
+.logo{font-family:var(--font-display);text-decoration:none;display:flex;flex-direction:column;line-height:1;margin-right:auto}
+.logo b{font-weight:400;font-size:30px;letter-spacing:.02em;color:var(--link)}
+.logo small{font-family:var(--font-body);font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.burger{display:none;border:1px solid var(--line);background:transparent;border-radius:10px;width:42px;height:42px;align-items:center;justify-content:center}
+.search{display:flex;align-items:center;flex:1 1 280px;max-width:420px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 6px 0 16px;min-width:0}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 4px;outline:none}
+.search input::placeholder{color:var(--muted)}
+.search svg{flex:none}
+.cart-btn{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:9px 16px;font-weight:500}
+.cart-btn .n{background:var(--btn-bg);color:var(--btn-fg);border-radius:999px;min-width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0 6px}
+.nav{border-top:1px solid var(--line)}
+.nav ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px 6px}
+.nav>.wrap>ul>li{position:relative}
+.nav a.top{display:block;padding:12px 12px;text-decoration:none;font-size:14.5px;letter-spacing:.02em;border-radius:8px}
+.nav a.top:hover,.nav li:focus-within>a.top{color:var(--link);background:var(--blush)}
+.nav .sub{display:none;position:absolute;left:0;top:100%;min-width:240px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;flex-direction:column;box-shadow:0 18px 40px -18px rgba(156,47,76,.35);z-index:5}
+.nav .has-sub:hover .sub,.nav .has-sub:focus-within .sub{display:flex}
+.nav .sub a{display:block;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:14px}
+.nav .sub a:hover{background:var(--blush);color:var(--link)}
+.nav .sale-link{color:var(--link);font-weight:600}
+
+/* hero */
+.hero{background:linear-gradient(120deg,var(--blush) 0%,var(--bg) 70%);border-bottom:1px solid var(--line)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:24px;padding-block:44px}
+.eyebrow{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--link);font-weight:500}
+.hero h1{font-size:clamp(36px,5.4vw,62px);margin-block:14px 16px}
+.hero p.lead{max-width:46ch;color:var(--muted);font-size:17px}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--btn-bg);color:var(--btn-fg);border:1px solid var(--btn-bg);border-radius:999px;padding:12px 26px;font-weight:500;letter-spacing:.03em;text-decoration:none}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--link);border-color:var(--rose)}
+.hero-art{min-width:0}
+.hero-art svg{width:100%;height:auto;max-height:420px;display:block}
+.trust{background:var(--surface);border-bottom:1px solid var(--line)}
+.trust .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 28px;padding-block:14px;font-size:14px;color:var(--muted)}
+.trust span{display:flex;align-items:center;gap:8px}
+.trust i{width:7px;height:7px;background:var(--rose);transform:rotate(45deg);display:inline-block}
+
+/* sections */
+section.block{padding-block:54px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.sec-head h2{font-size:clamp(26px,3.4vw,38px)}
+.sec-head p{color:var(--muted);margin-top:6px}
+.link-all{color:var(--link);font-weight:500;text-decoration:none;border-bottom:1px solid var(--rose);padding-bottom:2px}
+
+/* categories */
+.cats{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+.cat{background:none;border:0;padding:0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0}
+.cat .disc{width:100%;max-width:150px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 30% 25%,var(--surface),var(--blush) 70%);border:1px solid var(--line);display:grid;place-items:center;transition:transform .25s}
+.cat:hover .disc{transform:translateY(-4px)}
+.cat .disc svg{width:78%;height:78%}
+.cat span{font-weight:500;font-size:15px}
+.cat small{display:block;color:var(--muted);font-size:12px;margin-top:-2px}
+
+/* tabs and grid */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 20px;font-size:14.5px}
+.tab[aria-selected="true"]{background:var(--btn-bg);border-color:var(--btn-bg);color:var(--btn-fg)}
+.filter-note{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 0;color:var(--muted);font-size:14px;min-height:24px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--blush);border:1px solid var(--blush-2);color:var(--ink);padding:4px 6px 4px 12px;border-radius:999px;font-size:13px}
+.chip button{border:0;background:var(--surface);border-radius:50%;width:20px;height:20px;line-height:1;padding:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:22px 18px;margin-top:22px}
+.card{display:flex;flex-direction:column;gap:10px;min-width:0}
+.tile{position:relative;aspect-ratio:1;border-radius:18px;overflow:hidden;background:radial-gradient(circle at 30% 20%,var(--surface) 0%,var(--blush) 75%);border:1px solid var(--line)}
+.tile svg{position:absolute;inset:0;width:100%;height:100%;transition:transform .4s}
+.card:hover .tile svg{transform:scale(1.05)}
+.badge{position:absolute;top:10px;left:10px;z-index:2;background:var(--badge-bg);color:var(--badge-fg);font-size:11.5px;font-weight:600;letter-spacing:.06em;padding:4px 10px;border-radius:999px;text-transform:uppercase}
+.badge.soft{background:var(--surface);color:var(--link);border:1px solid var(--rose)}
+.card h3{font-family:var(--font-body);font-size:15.5px;font-weight:500;line-height:1.3}
+.spec{color:var(--muted);font-size:13px;line-height:1.35}
+.gem-name{font-size:12px;color:var(--link);letter-spacing:.04em}
+.price{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.price b{font-weight:600}
+.price s{color:var(--muted);font-size:14px}
+.add{margin-top:auto;border:1px solid var(--rose);background:transparent;color:var(--link);border-radius:999px;padding:9px 14px;font-weight:500;font-size:14px}
+.add:hover{background:var(--blush)}
+.add.done{background:var(--btn-bg);color:var(--btn-fg);border-color:var(--btn-bg)}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0}
+
+/* drops carousel */
+.drops{background:var(--surface);border-block:1px solid var(--line)}
+.carousel-ctl{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.arrow{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center}
+.arrow:hover{background:var(--blush)}
+.track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:thin}
+.track .card{flex:0 0 min(70%,250px);scroll-snap-align:start}
+
+/* hot picks */
+.hot{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:18px}
+.hot a{position:relative;display:block;border-radius:22px;overflow:hidden;min-height:300px;text-decoration:none;background:linear-gradient(160deg,var(--blush),var(--blush-2));border:1px solid var(--line);min-width:0}
+.hot a svg{position:absolute;inset:0;width:100%;height:100%}
+.hot .cap{position:absolute;left:18px;bottom:18px;right:18px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.hot .cap h3{font-size:26px;color:var(--ink)}
+.hot .cap .btn{padding:9px 20px;font-size:14px}
+.hot .big .cap h3{font-size:32px}
+
+/* reviews */
+.reviews{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:18px}
+.review{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.stars{color:var(--rose);letter-spacing:.2em;font-size:15px}
+.review p{color:var(--ink)}
+.who{display:flex;align-items:center;gap:10px;margin-top:auto;font-size:14px;color:var(--muted)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--blush-2);display:grid;place-items:center;font-weight:600;color:var(--link)}
+.sample{font-size:13px;color:var(--muted)}
+
+/* footer */
+footer{background:var(--blush);border-top:1px solid var(--line);margin-top:20px}
+footer .wrap{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:34px;padding-block:44px}
+footer h3{font-size:19px;margin-bottom:14px}
+footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+footer a{text-decoration:none;color:var(--muted)}
+footer a:hover{color:var(--link)}
+.contact-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.copy{border:1px solid var(--rose);background:var(--surface);color:var(--link);border-radius:999px;padding:4px 12px;font-size:13px}
+.pay{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.pay span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:12.5px;color:var(--muted)}
+.legal{border-top:1px solid var(--blush-2);color:var(--muted);font-size:13px}
+.legal .wrap{display:block;padding-block:16px}
+
+/* cart drawer */
+.veil{position:fixed;inset:0;background:rgba(40,12,22,.45);z-index:90}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(430px,100%);background:var(--surface);z-index:100;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) 18px;border-left:1px solid var(--line)}
+.drawer header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.drawer h2{font-size:26px}
+.x{border:1px solid var(--line);background:var(--bg);border-radius:50%;width:38px;height:38px}
+.lines{flex:1;overflow:auto;display:flex;flex-direction:column;gap:14px;padding-block:8px;min-height:0}
+.line{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center}
+.line .th{width:64px;height:64px;border-radius:12px;background:var(--blush);overflow:hidden;position:relative}
+.line .th svg{position:absolute;inset:0;width:100%;height:100%}
+.line b{font-weight:500;font-size:14.5px;display:block}
+.qty{display:flex;align-items:center;gap:8px;margin-top:4px;font-variant-numeric:tabular-nums}
+.qty button{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--bg);line-height:1;padding:0}
+.drawer .sum{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.drawer .tot{display:flex;justify-content:space-between;font-weight:600;font-size:18px;font-variant-numeric:tabular-nums}
+.drawer small{color:var(--muted)}
+
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:1fr;padding-block:30px}
+  .hero-art{order:-1;max-width:340px;margin-inline:auto}
+  .cats{grid-template-columns:repeat(3,1fr)}
+  .hot{grid-template-columns:1fr}
+  .hot a{min-height:260px}
+  footer .wrap{grid-template-columns:1fr}
+  .burger{display:inline-flex}
+  .search{order:5;flex:1 1 100%;max-width:none}
+  .nav{display:none}
+  .nav.open{display:block}
+  .nav ul{flex-direction:column}
+  .nav .sub{display:flex;position:static;border:0;box-shadow:none;padding:0 0 6px 14px;min-width:0;background:transparent}
+  .nav a.top{padding:10px 8px}
+  .logo{margin-right:auto}
+}
+@media (max-width:480px){
+  .cats{gap:12px}
+  .cat span{font-size:14px}
+  .trust .wrap{justify-content:flex-start}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .cat .disc,.tile svg{transition:none}
+}
+</style>
+</head>
+<body>
+
+
+<div class="ann" role="status"><div class="wrap"><span id="annText">Wedding season sale is live</span></div></div>
+
+<header class="site-head" id="top">
+  <div class="wrap bar">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
+    </button>
+    <a class="logo" href="#top" aria-label="Jiya Gem House, home"><b>Jiya</b><small>Gem House</small></a>
+    <form class="search" id="searchForm" role="search">
+      <label class="sr" for="q">Search gemstones and jewellery</label>
+      <input id="q" type="search" placeholder="Search rings, pendants, ruby, emerald" autocomplete="off">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+    </form>
+    <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h2l2 9h8l2-7H6"/><circle cx="8" cy="17" r="1"/><circle cx="14" cy="17" r="1"/></svg>
+      Cart <span class="n" id="cartN">0</span>
+    </button>
+  </div>
+  <nav class="nav" id="nav" aria-label="Main">
+    <div class="wrap">
+      <ul>
+        <li><a class="top" href="#drops">Latest Drops</a></li>
+        <li class="has-sub"><a class="top" href="#shop" data-type="ring">Rings</a>
+          <ul class="sub">
+            <li><a href="#shop" data-type="ring">All Rings</a></li>
+            <li><a href="#shop" data-type="ring" data-q="solitaire">Solitaire Rings</a></li>
+            <li><a href="#shop" data-type="ring" data-q="cocktail">Cocktail Rings</a></li>
+            <li><a href="#shop" data-type="ring" data-q="men">Men's Stone Rings</a></li>
+          </ul></li>
+        <li class="has-sub"><a class="top" href="#shop" data-type="pendant">Pendants &amp; Earrings</a>
+          <ul class="sub">
+            <li><a href="#shop" data-type="pendant">Gemstone Pendants</a></li>
+            <li><a href="#shop" data-type="earrings">Studs &amp; Drops</a></li>
+            <li><a href="#shop" data-type="set">Bridal Sets</a></li>
+          </ul></li>
+        <li><a class="top" href="#shop" data-type="bracelet">Bracelets</a></li>
+        <li class="has-sub"><a class="top" href="#shop" data-type="loose">Loose Gemstones</a>
+          <ul class="sub">
+            <li><a href="#shop" data-type="loose">All Loose Stones</a></li>
+            <li><a href="#shop" data-type="loose" data-q="ruby">Ruby (Yaqoot)</a></li>
+            <li><a href="#shop" data-type="loose" data-q="emerald">Emerald (Zamurd)</a></li>
+          </ul></li>
+        <li><a class="top sale-link" href="#shop" data-tab="sale" data-type="all">Wedding Sale</a></li>
+        <li><a class="top" href="#shop" data-tab="signature" data-type="all">Top Sellers</a></li>
+        <li><a class="top" href="#contact">Track Your Order</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="heroH">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Wedding season 2026</p>
+        <h1 id="heroH">Gemstones, set close to the heart.</h1>
+        <p class="lead">Jiya means heart in Urdu. Rings, pendants and loose stones in rose-toned settings, picked one piece at a time.</p>
+        <div class="cta">
+          <a class="btn" href="#shop" data-tab="sale" data-type="all">Shop the sale</a>
+          <a class="btn ghost" href="#drops">See latest drops</a>
+        </div>
+      </div>
+      <div class="hero-art" id="heroArt" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <div class="trust"><div class="wrap">
+    <span><i></i>Hand-picked stones</span>
+    <span><i></i>Nationwide delivery, COD available</span>
+    <span><i></i>Secure payments</span>
+    <span><i></i>Gift box with every order</span>
+  </div></div>
+
+  <section class="block" aria-labelledby="catH"><div class="wrap">
+    <div class="sec-head"><div><h2 id="catH">Discover Your Style</h2></div></div>
+    <div class="cats" id="cats"></div>
+  </div></section>
+
+  <section class="block" id="shop" style="padding-top:10px" aria-labelledby="shopH"><div class="wrap">
+    <div class="sec-head">
+      <div><h2 id="shopH">Explore Our Collections</h2><p>Our newest stones and settings, ready to ship.</p></div>
+      <div class="tabs" role="tablist" aria-label="Collections" id="tabs">
+        <button class="tab" role="tab" data-tab="signature">Signature Picks</button>
+        <button class="tab" role="tab" data-tab="sale">Wedding Sale</button>
+        <button class="tab" role="tab" data-tab="clearance">Clearance</button>
+        <button class="tab" role="tab" data-tab="all">Shop All</button>
+      </div>
+    </div>
+    <div class="filter-note" id="note"></div>
+    <div class="grid" id="grid"></div>
+  </div></section>
+
+  <section class="block drops" id="drops" aria-labelledby="dropsH"><div class="wrap">
+    <div class="sec-head">
+      <div><h2 id="dropsH">Latest Drops</h2></div>
+      <div class="carousel-ctl">
+        <button class="arrow" id="prev" aria-label="Previous pieces">&#8592;</button>
+        <span id="pos">1 / 8</span>
+        <button class="arrow" id="next" aria-label="Next pieces">&#8594;</button>
+        <a class="link-all" href="#shop" data-tab="all" data-type="all" style="margin-left:10px">View all pieces</a>
+      </div>
+    </div>
+    <div class="track" id="track"></div>
+  </div></section>
+
+  <section class="block" aria-labelledby="hotH"><div class="wrap">
+    <div class="sec-head"><div><h2 id="hotH">Hot Picks, Limited</h2><p>Small batches. When a stone is gone, it is gone.</p></div></div>
+    <div class="hot" id="hot"></div>
+  </div></section>
+
+  <section class="block" style="padding-top:0" aria-labelledby="revH"><div class="wrap">
+    <div class="sec-head"><div><h2 id="revH">Loved by Our Customers</h2><p class="sample">Sample text shown here. Replace it with your own customer reviews before going live.</p></div></div>
+    <div class="reviews">
+      <article class="review"><div class="stars" aria-label="5 out of 5">★★★★★</div><p>The ruby ring arrived in a pink gift box and looks even better in daylight. Sized perfectly for my sister's mehndi.</p><div class="who"><span class="av">A</span>Ayesha K., Lahore</div></article>
+      <article class="review"><div class="stars" aria-label="5 out of 5">★★★★★</div><p>Ordered the emerald pendant for my mother. The color is deep and even, and delivery took three days.</p><div class="who"><span class="av">S</span>Sana R., Karachi</div></article>
+      <article class="review"><div class="stars" aria-label="5 out of 5">★★★★★</div><p>Cash on delivery made it easy to trust a new shop. The turquoise earrings are light enough for all-day wear.</p><div class="who"><span class="av">M</span>Mehwish T., Islamabad</div></article>
+      <article class="review"><div class="stars" aria-label="4 out of 5">★★★★☆</div><p>Lovely loose sapphire, and they answered every question about carat and cut before I paid.</p><div class="who"><span class="av">H</span>Hamza A., Faisalabad</div></article>
+    </div>
+  </div></section>
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div>
+      <h3>Get in Contact</h3>
+      <p style="color:var(--muted);max-width:38ch">Questions about a stone, a size or an order? Message us and we will reply the same day.</p>
+      <div class="contact-line"><span id="phone">03XX XXXXXXX</span><button class="copy" id="copyPhone" type="button">Copy number</button></div>
+      <p style="color:var(--muted);margin-top:10px">Shop address: add your store address here.</p>
+      <div class="pay" aria-label="Payment methods"><span>Cash on delivery</span><span>Bank transfer</span><span>JazzCash</span><span>Easypaisa</span></div>
+    </div>
+    <div>
+      <h3>Our Society</h3>
+      <ul><li><a href="#top">About Us</a></li><li><a href="#top">Privacy Policy</a></li><li><a href="#top">Shipping Policy</a></li><li><a href="#top">Return Policy</a></li><li><a href="#top">Terms &amp; Conditions</a></li></ul>
+    </div>
+    <div>
+      <h3>Shop</h3>
+      <ul>
+        <li><a href="#shop" data-type="ring">Rings</a></li>
+        <li><a href="#shop" data-type="pendant">Pendants</a></li>
+        <li><a href="#shop" data-type="earrings">Earrings</a></li>
+        <li><a href="#shop" data-type="bracelet">Bracelets</a></li>
+        <li><a href="#shop" data-type="loose">Loose Gemstones</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="legal"><div class="wrap">&copy; 2026 Jiya Gem House. All rights reserved.</div></div>
+</footer>
+
+<div class="veil" id="veil" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Your cart" hidden>
+  <header><h2>Your Cart</h2><button class="x" id="closeCart" aria-label="Close cart">&#10005;</button></header>
+  <div class="lines" id="lines"></div>
+  <div class="sum">
+    <div class="tot"><span>Estimated total</span><span id="total">Rs.0</span></div>
+    <small>Delivery and discounts are calculated at checkout.</small>
+    <button class="btn" id="checkout" type="button">Check out</button>
+    <small id="coNote" hidden>This is a preview storefront. Connect a checkout to take orders.</small>
+  </div>
+</aside>
+
+<script>
+(function(){
+  var uid = 0;
+  var METAL = '#e3a897';
+  var GEMS = {
+    ruby:['#ff6b86','#a3123a'], emerald:['#46d6a0','#0a6b4a'], sapphire:['#7c9bff','#1b2f8f'],
+    aquamarine:['#a5eef2','#3aa6bd'], tourmaline:['#ffb4d2','#d1337f'], morganite:['#ffd9d0','#e59a8f'],
+    amethyst:['#dcb0f5','#6f2da8'], turquoise:['#86e5db','#1f9a96'], peridot:['#dcf277','#7fa418'],
+    quartz:['#ffe6ee','#f0a9c0'], topaz:['#ffd594','#e08a2b'], garnet:['#c9364f','#5a0e22']
+  };
+  var GEM_LABEL = {ruby:'Ruby (Yaqoot)',emerald:'Emerald (Zamurd)',sapphire:'Sapphire (Neelam)',aquamarine:'Aquamarine',tourmaline:'Pink Tourmaline',morganite:'Morganite',amethyst:'Amethyst',turquoise:'Turquoise (Firoza)',peridot:'Peridot',quartz:'Rose Quartz',topaz:'Imperial Topaz',garnet:'Garnet'};
+  var TYPE_LABEL = {ring:'Rings',pendant:'Pendants',earrings:'Earrings',bracelet:'Bracelets',loose:'Loose Gemstones',set:'Bridal Sets'};
+
+  var P = [
+    {id:1,name:'Yaqoot Solitaire Ring',type:'ring',gem:'ruby',shape:'cushion',ct:'2.1 ct',metal:'Silver 925, rose plated',price:4850,old:6200,sig:1},
+    {id:2,name:'Zamurd Halo Pendant',type:'pendant',gem:'emerald',shape:'oval',ct:'1.8 ct',metal:'Silver 925, rose plated',price:3640,old:4400,sig:1},
+    {id:3,name:'Blush Morganite Ring',type:'ring',gem:'morganite',shape:'oval',ct:'3.0 ct',metal:'Silver 925, rose plated',price:5450,old:8550,sig:1},
+    {id:4,name:'Firoza Drop Earrings',type:'earrings',gem:'turquoise',shape:'oval',ct:'2 x 1.2 ct',metal:'Silver 925',price:2240,old:3050},
+    {id:5,name:'Rose Tourmaline Pendant',type:'pendant',gem:'tourmaline',shape:'round',ct:'1.5 ct',metal:'Silver 925, rose plated',price:2890,old:3650,sig:1},
+    {id:6,name:'Neelam Classic Ring',type:'ring',gem:'sapphire',shape:'emerald',ct:'2.4 ct',metal:'Silver 925',price:6780,old:8900},
+    {id:7,name:'Aquamarine Studs',type:'earrings',gem:'aquamarine',shape:'round',ct:'2 x 1.0 ct',metal:'Silver 925',price:1870,old:3450,clr:1},
+    {id:8,name:'Amethyst Cocktail Ring',type:'ring',gem:'amethyst',shape:'cushion',ct:'4.2 ct',metal:'Silver 925, rose plated',price:2640,old:3490,sig:1},
+    {id:9,name:'Rose Quartz Bead Bracelet',type:'bracelet',gem:'quartz',shape:'round',ct:'8 mm beads',metal:'Elastic cord',price:1380,old:1980,clr:1},
+    {id:10,name:'Peridot Tennis Bracelet',type:'bracelet',gem:'peridot',shape:'round',ct:'0.2 ct each',metal:'Silver 925',price:3780},
+    {id:11,name:'Loose Ruby, Oval Cut',type:'loose',gem:'ruby',shape:'oval',ct:'3.2 ct',metal:'Unset stone',price:9500,old:11200,sig:1},
+    {id:12,name:'Loose Emerald, Step Cut',type:'loose',gem:'emerald',shape:'emerald',ct:'2.6 ct',metal:'Unset stone',price:11800,old:14500,sig:1},
+    {id:13,name:'Imperial Topaz Pendant',type:'pendant',gem:'topaz',shape:'cushion',ct:'2.8 ct',metal:'Silver 925, rose plated',price:3220,old:3850,clr:1},
+    {id:14,name:'Garnet Stud Earrings',type:'earrings',gem:'garnet',shape:'round',ct:'2 x 0.8 ct',metal:'Silver 925',price:1340,old:1650,clr:1},
+    {id:15,name:'Bridal Ruby Set',type:'set',gem:'ruby',shape:'round',ct:'Pendant + studs',metal:'Silver 925, rose plated',price:14900,old:18500,sig:1},
+    {id:16,name:'Turquoise Men\'s Ring',type:'ring',gem:'turquoise',shape:'cushion',ct:'5.0 ct',metal:'Silver 925',price:2540,old:3250}
+  ];
+  var DROPS = [
+    {p:11,b:'New arrival'},{p:15,b:'Limited stock'},{p:3,b:'Featured pick'},{p:5,b:'New arrival'},
+    {p:12,b:'Featured pick'},{p:2,b:'New arrival'},{p:8,b:'Limited stock'},{p:1,b:'Featured pick'}
+  ];
+
+  function byId(id){ for (var i=0;i<P.length;i++) if (P[i].id===id) return P[i]; }
+  function pct(p){ return p.old ? Math.round((1-p.price/p.old)*100) : 0; }
+  function money(n){ return 'Rs.' + n.toLocaleString('en-PK'); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  /* ---------- gem drawing ---------- */
+  function outline(shape,cx,cy,r){
+    var n=12, pts=[], k=2, sx=1;
+    if (shape==='oval') sx=.78;
+    if (shape==='cushion') k=3;
+    if (shape==='emerald'){ k=5; sx=.76; }
+    for (var i=0;i<n;i++){
+      var a=i/n*Math.PI*2-Math.PI/2, c=Math.cos(a), s=Math.sin(a);
+      var x=Math.sign(c)*Math.pow(Math.abs(c),2/k), y=Math.sign(s)*Math.pow(Math.abs(s),2/k);
+      pts.push([cx+x*r*sx, cy+y*r]);
+    }
+    return pts;
+  }
+  function pts(a){ return a.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' '); }
+  function gem(shape,cx,cy,r,gid){
+    var o=outline(shape,cx,cy,r), n=o.length;
+    var inn=o.map(function(p){return [cx+(p[0]-cx)*.55, cy+(p[1]-cy)*.55];});
+    var s='<polygon points="'+pts(o)+'" fill="url(#'+gid+')"/>';
+    for (var i=0;i<n;i++){
+      var j=(i+1)%n;
+      s+='<polygon points="'+pts([o[i],o[j],inn[j],inn[i]])+'" fill="#fff" fill-opacity="'+(i%2?'.30':'.07')+'" stroke="#fff" stroke-opacity=".45" stroke-width=".6"/>';
+    }
+    s+='<polygon points="'+pts(inn)+'" fill="#fff" fill-opacity=".2" stroke="#fff" stroke-opacity=".7" stroke-width=".7"/>';
+    s+='<ellipse cx="'+(cx-r*.28).toFixed(1)+'" cy="'+(cy-r*.34).toFixed(1)+'" rx="'+(r*.16).toFixed(1)+'" ry="'+(r*.09).toFixed(1)+'" fill="#fff" fill-opacity=".85" transform="rotate(-35 '+(cx-r*.28).toFixed(1)+' '+(cy-r*.34).toFixed(1)+')"/>';
+    return s;
+  }
+  function defs(gid,key){
+    var c=GEMS[key];
+    return '<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+c[0]+'"/><stop offset="1" stop-color="'+c[1]+'"/></linearGradient></defs>';
+  }
+  function star(x,y,r){
+    return '<path d="M'+x+' '+(y-r)+' Q'+x+' '+y+' '+(x+r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y+r)+' Q'+x+' '+y+' '+(x-r)+' '+y+' Q'+x+' '+y+' '+x+' '+(y-r)+'Z" fill="#fff" fill-opacity=".9"/>';
+  }
+  function scene(p){
+    var gid='g'+(uid++), d=defs(gid,p.gem), s='', M=' stroke="'+METAL+'" fill="none" stroke-linecap="round"';
+    if (p.type==='ring'){
+      s+='<circle cx="100" cy="126" r="50"'+M+' stroke-width="9"/>';
+      s+='<circle cx="100" cy="126" r="55"'+M+' stroke-width="1.4" stroke-opacity=".6"/>';
+      s+=gem(p.shape,100,68,27,gid);
+      s+='<circle cx="76" cy="84" r="4" fill="'+METAL+'"/><circle cx="124" cy="84" r="4" fill="'+METAL+'"/>';
+      s+=star(150,40,9)+star(48,52,6);
+    } else if (p.type==='pendant'){
+      s+='<path d="M24 14 Q100 160 176 14"'+M+' stroke-width="2.2"/>';
+      s+='<circle cx="100" cy="88" r="6"'+M+' stroke-width="2.4"/>';
+      s+=gem(p.shape,100,122,28,gid);
+      s+=star(158,96,8)+star(44,120,6);
+    } else if (p.type==='earrings'){
+      [62,138].forEach(function(x){
+        var dir = x<100?1:-1;
+        s+='<path d="M'+x+' 84 Q'+x+' 40 '+(x+dir*26)+' 34"'+M+' stroke-width="2.4"/>';
+        s+='<circle cx="'+x+'" cy="90" r="5"'+M+' stroke-width="2.4"/>';
+        s+=gem(p.shape,x,122,21,gid);
+      });
+      s+=star(100,70,8);
+    } else if (p.type==='bracelet'){
+      s+='<circle cx="100" cy="100" r="60"'+M+' stroke-width="2.2"/>';
+      for (var i=0;i<10;i++){
+        var a=i/10*Math.PI*2;
+        s+=gem('round',100+Math.cos(a)*60,100+Math.sin(a)*60,12,gid);
+      }
+      s+=star(100,100,10);
+    } else if (p.type==='set'){
+      s+='<path d="M30 20 Q100 100 170 20"'+M+' stroke-width="2"/>';
+      s+=gem('round',100,92,26,gid);
+      s+=gem('round',46,150,16,gid)+gem('round',154,150,16,gid);
+      s+='<circle cx="46" cy="128" r="3"'+M+' stroke-width="2"/><circle cx="154" cy="128" r="3"'+M+' stroke-width="2"/>';
+      s+=star(100,168,7);
+    } else {
+      s+=gem(p.shape,100,102,52,gid);
+      s+=star(32,40,10)+star(170,60,7)+star(158,166,9)+star(40,160,6);
+    }
+    return '<svg viewBox="0 0 200 200" role="img" aria-label="'+esc(p.name)+'">'+d+s+'</svg>';
+  }
+  function heroArt(){
+    var a=['h'+(uid++),'h'+(uid++),'h'+(uid++)], s='';
+    s+=defs(a[0],'tourmaline')+defs(a[1],'morganite')+defs(a[2],'ruby');
+    s+='<circle cx="200" cy="180" r="150" fill="none" stroke="'+METAL+'" stroke-opacity=".5" stroke-width="1.2"/>';
+    s+='<circle cx="200" cy="180" r="118" fill="none" stroke="'+METAL+'" stroke-opacity=".3" stroke-width="1" stroke-dasharray="2 7"/>';
+    s+=gem('oval',200,170,96,a[0]);
+    s+=gem('cushion',96,262,52,a[1]);
+    s+=gem('round',312,92,44,a[2]);
+    s+=star(330,230,14)+star(70,110,11)+star(246,52,9)+star(150,60,7)+star(340,300,8);
+    return '<svg viewBox="0 0 400 360">'+s+'</svg>';
+  }
+
+  /* ---------- render pieces ---------- */
+  function card(p,badge){
+    var d=pct(p), b='';
+    if (badge) b='<span class="badge soft">'+esc(badge)+'</span>';
+    else if (d>0) b='<span class="badge">-'+d+'%</span>';
+    return '<article class="card"><div class="tile">'+b+scene(p)+'</div>'
+      + '<span class="gem-name">'+esc(GEM_LABEL[p.gem])+'</span>'
+      + '<h3>'+esc(p.name)+'</h3>'
+      + '<span class="spec">'+esc(p.ct)+' &middot; '+esc(p.metal)+'</span>'
+      + '<div class="price"><b>'+money(p.price)+'</b>'+(p.old?'<s>'+money(p.old)+'</s>':'')+'</div>'
+      + '<button class="add" type="button" data-add="'+p.id+'">Add to cart</button></article>';
+  }
+
+  var state={tab:'signature',type:'all',q:''};
+  function matches(p){
+    if (state.tab==='signature' && !p.sig) return false;
+    if (state.tab==='sale' && pct(p)<15) return false;
+    if (state.tab==='clearance' && !p.clr) return false;
+    if (state.type!=='all' && p.type!==state.type) return false;
+    if (state.q){
+      var hay=(p.name+' '+GEM_LABEL[p.gem]+' '+p.type+' '+TYPE_LABEL[p.type]+' '+p.metal+' '+(p.type==='ring'&&/solitaire/i.test(p.name)?'solitaire':'')+' '+(p.type==='ring'&&/cocktail/i.test(p.name)?'cocktail':'')+' '+(/men/i.test(p.name)?'men':'')).toLowerCase();
+      var terms=state.q.toLowerCase().split(/\s+/).filter(Boolean);
+      for (var i=0;i<terms.length;i++) if (hay.indexOf(terms[i])<0) return false;
+    }
+    return true;
+  }
+  function renderShop(){
+    var list=P.filter(matches);
+    document.getElementById('grid').innerHTML = list.length ? list.map(function(p){return card(p);}).join('')
+      : '<p class="empty">No pieces match yet. Try another collection or clear the search.</p>';
+    var tabs=document.querySelectorAll('#tabs .tab');
+    for (var i=0;i<tabs.length;i++) tabs[i].setAttribute('aria-selected', tabs[i].getAttribute('data-tab')===state.tab?'true':'false');
+    var n='';
+    if (state.type!=='all') n+='<span class="chip">'+esc(TYPE_LABEL[state.type])+'<button type="button" data-clear="type" aria-label="Clear category">&#10005;</button></span>';
+    if (state.q) n+='<span class="chip">&ldquo;'+esc(state.q)+'&rdquo;<button type="button" data-clear="q" aria-label="Clear search">&#10005;</button></span>';
+    document.getElementById('note').innerHTML = n + '<span>Showing '+list.length+' of '+P.length+' pieces</span>';
+  }
+
+  /* categories */
+  var CATS=[
+    {t:'ring',l:'Rings',g:'ruby',sh:'cushion'},{t:'pendant',l:'Pendants',g:'emerald',sh:'oval'},
+    {t:'earrings',l:'Earrings',g:'turquoise',sh:'oval'},{t:'bracelet',l:'Bracelets',g:'quartz',sh:'round'},
+    {t:'loose',l:'Loose Stones',g:'sapphire',sh:'emerald'},{t:'set',l:'Bridal Sets',g:'tourmaline',sh:'round'}
+  ];
+  document.getElementById('cats').innerHTML = CATS.map(function(c){
+    var rep={type:c.t,gem:c.g,shape:c.sh,name:c.l};
+    return '<button class="cat" type="button" data-type="'+c.t+'" data-tab="all"><span class="disc">'+scene(rep)+'</span><span>'+c.l+'</span></button>';
+  }).join('');
+
+  /* drops */
+  document.getElementById('track').innerHTML = DROPS.map(function(d){ return card(byId(d.p),d.b); }).join('');
+  /* hero + hot picks */
+  document.getElementById('heroArt').innerHTML = heroArt();
+  var HOT=[
+    {cls:'big',h:'Wedding Rings',type:'ring',gem:'ruby',shape:'cushion',tab:'all'},
+    {cls:'',h:'Pendants',type:'pendant',gem:'tourmaline',shape:'round',tab:'all'},
+    {cls:'',h:'Loose Stones',type:'loose',gem:'emerald',shape:'oval',tab:'all'}
+  ];
+  document.getElementById('hot').innerHTML = HOT.map(function(h){
+    var sc=scene({type:h.type,gem:h.gem,shape:h.shape,name:h.h}).replace('<svg ','<svg preserveAspectRatio="xMidYMin meet" ');
+    return '<a class="'+h.cls+'" href="#shop" data-type="'+h.type+'" data-tab="'+h.tab+'">'+sc+'<div class="cap"><h3>'+h.h+'</h3><span class="btn">Shop now</span></div></a>';
+  }).join('');
+
+  /* ---------- cart ---------- */
+  var cart={};
+  function cartCount(){ var n=0; for (var k in cart) n+=cart[k]; return n; }
+  function renderCart(){
+    document.getElementById('cartN').textContent=cartCount();
+    var ids=Object.keys(cart), html='', total=0;
+    if (!ids.length) html='<p style="color:var(--muted)">Your cart is empty. Add a piece you like and it will show up here.</p>';
+    ids.forEach(function(k){
+      var p=byId(+k), q=cart[k]; total+=p.price*q;
+      html+='<div class="line"><div class="th">'+scene(p)+'</div><div><b>'+esc(p.name)+'</b><div class="qty"><button type="button" data-dec="'+p.id+'" aria-label="Fewer">-</button><span>'+q+'</span><button type="button" data-inc="'+p.id+'" aria-label="More">+</button></div></div><span style="font-variant-numeric:tabular-nums">'+money(p.price*q)+'</span></div>';
+    });
+    document.getElementById('lines').innerHTML=html;
+    document.getElementById('total').textContent=money(total);
+  }
+  function openCart(){ document.getElementById('veil').hidden=false; document.getElementById('drawer').hidden=false; document.getElementById('coNote').hidden=true; renderCart(); }
+  function closeCart(){ document.getElementById('veil').hidden=true; document.getElementById('drawer').hidden=true; }
+
+  /* ---------- events ---------- */
+  function setNav(open){
+    var nav=document.getElementById('nav'), b=document.getElementById('burger');
+    nav.classList.toggle('open',open); b.setAttribute('aria-expanded',open?'true':'false');
+  }
+  document.getElementById('burger').addEventListener('click',function(){ setNav(!document.getElementById('nav').classList.contains('open')); });
+  document.getElementById('cartBtn').addEventListener('click',openCart);
+  document.getElementById('closeCart').addEventListener('click',closeCart);
+  document.getElementById('veil').addEventListener('click',closeCart);
+  document.getElementById('checkout').addEventListener('click',function(){ document.getElementById('coNote').hidden=false; });
+  document.addEventListener('keydown',function(e){ if (e.key==='Escape') closeCart(); });
+
+  document.getElementById('searchForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    state.q=document.getElementById('q').value.trim(); state.tab='all'; state.type='all';
+    renderShop(); document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  });
+  document.getElementById('q').addEventListener('input',function(e){
+    if (!e.target.value.trim() && state.q){ state.q=''; renderShop(); }
+  });
+
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    var add=t.closest('[data-add]');
+    if (add){
+      var id=add.getAttribute('data-add'); cart[id]=(cart[id]||0)+1; renderCart();
+      add.textContent='Added'; add.classList.add('done');
+      setTimeout(function(){ add.textContent='Add to cart'; add.classList.remove('done'); },1200);
+      return;
+    }
+    var inc=t.closest('[data-inc]'), dec=t.closest('[data-dec]');
+    if (inc){ cart[inc.getAttribute('data-inc')]++; renderCart(); return; }
+    if (dec){ var k=dec.getAttribute('data-dec'); cart[k]--; if (cart[k]<=0) delete cart[k]; renderCart(); return; }
+    var clr=t.closest('[data-clear]');
+    if (clr){ var w=clr.getAttribute('data-clear'); if (w==='type') state.type='all'; else { state.q=''; document.getElementById('q').value=''; } renderShop(); return; }
+    var tabBtn=t.closest('.tab');
+    if (tabBtn){ state.tab=tabBtn.getAttribute('data-tab'); renderShop(); return; }
+    var f=t.closest('[data-type],[data-tab]');
+    if (f && !f.classList.contains('tab')){
+      e.preventDefault();
+      if (f.hasAttribute('data-type')) state.type=f.getAttribute('data-type');
+      if (f.hasAttribute('data-tab')) state.tab=f.getAttribute('data-tab'); else if (state.tab==='signature' || state.tab==='clearance') state.tab='all';
+      state.q=f.getAttribute('data-q')||'';
+      document.getElementById('q').value=state.q;
+      renderShop(); setNav(false);
+      document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+      return;
+    }
+    var a=t.closest('a[href^="#"]');
+    if (a){
+      var target=a.getAttribute('href').slice(1);
+      var el=document.getElementById(target);
+      if (el){ e.preventDefault(); setNav(false); el.scrollIntoView({behavior:'smooth'}); }
+    }
+  });
+
+  /* carousel */
+  var track=document.getElementById('track'), pos=document.getElementById('pos');
+  function step(){ var c=track.querySelector('.card'); return c ? c.getBoundingClientRect().width+18 : 260; }
+  function upd(){ var i=Math.round(track.scrollLeft/step())+1; pos.textContent=Math.min(i,DROPS.length)+' / '+DROPS.length; }
+  document.getElementById('prev').addEventListener('click',function(){ track.scrollBy({left:-step(),behavior:'smooth'}); });
+  document.getElementById('next').addEventListener('click',function(){ track.scrollBy({left:step(),behavior:'smooth'}); });
+  track.addEventListener('scroll',upd);
+
+  /* announcement rotation */
+  var MSG=['Wedding season sale is live','Nationwide delivery, COD available','Free gift box with every order'];
+  var mi=0;
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    setInterval(function(){ mi=(mi+1)%MSG.length; document.getElementById('annText').textContent=MSG[mi]; },4200);
+  }
+
+  /* copy number */
+  document.getElementById('copyPhone').addEventListener('click',function(){
+    var btn=this, el=document.getElementById('phone');
+    function sel(){ var r=document.createRange(); r.selectNodeContents(el); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='Selected'; }
+    try { navigator.clipboard.writeText(el.textContent).then(function(){ btn.textContent='Copied'; },sel); } catch(err){ sel(); }
+    setTimeout(function(){ btn.textContent='Copy number'; },1500);
+  });
+
+  renderShop(); renderCart(); upd();
+})();
+</script>
+
+</body>
+</html>
